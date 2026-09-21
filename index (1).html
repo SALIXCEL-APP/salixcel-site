@@ -1,0 +1,580 @@
+<title>SALIXCEL</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8F2;
+    --surface:#FFFFFF;
+    --surface-2:#F3EFE4;
+    --border:#E7E2D4;
+    --ink:#211E17;
+    --muted:#847D6C;
+    --accent:#6B2FB3;
+    --accent-ink:#FFFFFF;
+    --accent-soft:#F1E7FA;
+    --accent-soft-ink:#5A2894;
+    --good:#2F7D5B;
+    --good-soft:#E4F3EC;
+    --shadow: 0 1px 2px rgba(33,30,23,.04), 0 8px 24px -12px rgba(33,30,23,.12);
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#18151F;
+      --surface:#211C2C;
+      --surface-2:#2A2436;
+      --border:#38314A;
+      --ink:#F3EFE7;
+      --muted:#A79CC2;
+      --accent:#A574E8;
+      --accent-ink:#1B1027;
+      --accent-soft:#332951;
+      --accent-soft-ink:#D9C4F5;
+      --good:#6FCBA1;
+      --good-soft:#1E3730;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.55);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#18151F;
+    --surface:#211C2C;
+    --surface-2:#2A2436;
+    --border:#38314A;
+    --ink:#F3EFE7;
+    --muted:#A79CC2;
+    --accent:#A574E8;
+    --accent-ink:#1B1027;
+    --accent-soft:#332951;
+    --accent-soft-ink:#D9C4F5;
+    --good:#6FCBA1;
+    --good-soft:#1E3730;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.55);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans',system-ui,-apple-system,sans-serif;
+    font-size:15.5px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Bricolage Grotesque',system-ui,sans-serif;
+    font-weight:700;
+    line-height:1.08;
+    text-wrap:balance;
+    margin:0;
+    letter-spacing:-.01em;
+  }
+  p{margin:0;}
+  a{color:inherit;}
+  img,svg{display:block;}
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;}
+  .icon{width:20px;height:20px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* nav */
+  header.nav{
+    position:sticky;top:env(safe-area-inset-top,0px);z-index:40;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.01em;}
+  .brand-mark{width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;flex:none;}
+  nav.links{display:flex;gap:26px;font-size:14px;font-weight:500;color:var(--muted);}
+  nav.links a{text-decoration:none;}
+  nav.links a:hover{color:var(--ink);}
+  .nav-actions{display:flex;align-items:center;gap:10px;}
+  .lang-toggle{display:flex;border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px;background:var(--surface);}
+  .lang-toggle button{border:none;background:transparent;font:inherit;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;cursor:pointer;color:var(--muted);}
+  .lang-toggle button.active{background:var(--accent);color:var(--accent-ink);}
+  @media (max-width:720px){ nav.links{display:none;} }
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:999px;border:1px solid transparent;cursor:pointer;text-decoration:none;}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);}
+  .btn-ghost{background:var(--surface);border-color:var(--border);color:var(--ink);}
+  .btn[disabled], .btn.soon{opacity:.62;cursor:default;}
+
+  /* hero */
+  .hero{padding-block:64px 56px;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;}
+  @media (max-width:880px){ .hero-grid{grid-template-columns:1fr;gap:40px;} }
+  .eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--accent-soft);color:var(--accent-soft-ink);font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;margin-bottom:18px;}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--good);}
+  .hero h1{font-size:clamp(32px,5vw,50px);}
+  .hero .sub{margin-top:18px;font-size:17px;color:var(--muted);max-width:46ch;}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+  .hero-note{margin-top:16px;font-size:12.5px;color:var(--muted);}
+
+  /* phone mock */
+  .phone{
+    width:min(300px,80vw);margin-inline:auto;background:var(--ink);border-radius:34px;padding:12px;box-shadow:var(--shadow);
+  }
+  .phone-screen{background:var(--bg);border-radius:24px;padding:18px 16px 20px;display:flex;flex-direction:column;gap:12px;}
+  .phone-topbar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);font-weight:600;padding:0 2px;}
+  .phone-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;}
+  .phone-card.accent{background:var(--accent);color:var(--accent-ink);}
+  .phone-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.75;font-weight:600;}
+  .phone-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px;margin-top:4px;}
+  .phone-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--border);}
+  .phone-row:first-of-type{border-top:none;}
+  .phone-dot{width:30px;height:30px;border-radius:9px;background:var(--surface-2);flex:none;display:flex;align-items:center;justify-content:center;color:var(--accent);}
+  .phone-row .t{flex:1;min-width:0;}
+  .phone-row .t .n{font-size:13px;font-weight:600;}
+  .phone-row .t .s{font-size:11.5px;color:var(--muted);}
+  .phone-row .v{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .phone-btn{background:var(--accent);color:var(--accent-ink);text-align:center;border-radius:12px;padding:10px;font-weight:600;font-size:13px;margin-top:2px;}
+  .phone-tabbar{display:flex;justify-content:space-around;padding-top:8px;}
+  .phone-tabbar .tab{width:18px;height:18px;color:var(--muted);}
+  .phone-tabbar .tab.on{color:var(--accent);}
+
+  /* sections */
+  section{padding-block:60px;border-top:1px solid var(--border);}
+  .section-head{max-width:56ch;margin-bottom:36px;}
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{font-size:clamp(24px,3.4vw,32px);}
+  .section-head .sub{margin-top:12px;color:var(--muted);font-size:15.5px;}
+
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:880px){ .features{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .features{grid-template-columns:1fr;} }
+  .feature{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px;}
+  .feature .fi{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);color:var(--accent-soft-ink);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .feature h3{font-family:'Work Sans',sans-serif;font-weight:600;font-size:15px;margin-bottom:6px;}
+  .feature p{font-size:13.5px;color:var(--muted);}
+
+  .why{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media (max-width:780px){ .why{grid-template-columns:1fr;} }
+  .why-item{padding:22px 0;}
+  .why-item .num{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px;}
+  .why-item h3{font-size:17px;margin-bottom:8px;}
+  .why-item p{font-size:14px;color:var(--muted);}
+
+  .cta-band{background:var(--accent);color:var(--accent-ink);border-radius:var(--radius-lg);padding:44px 36px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:24px;}
+  .cta-band h2{font-size:clamp(22px,3vw,28px);color:var(--accent-ink);}
+  .cta-band .sub2{margin-top:8px;color:color-mix(in srgb, var(--accent-ink) 78%, transparent);font-size:14.5px;max-width:44ch;}
+  .cta-band .btn-ghost{background:var(--accent-ink);color:var(--accent);border-color:transparent;}
+
+  /* legal accordion */
+  .accordion{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface);}
+  .acc-item + .acc-item{border-top:1px solid var(--border);}
+  .acc-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;background:transparent;border:none;font:inherit;font-weight:600;font-size:14.5px;color:var(--ink);cursor:pointer;text-align:left;}
+  .acc-chevron{width:16px;height:16px;flex:none;transition:transform .18s ease;color:var(--muted);}
+  .acc-item.open .acc-chevron{transform:rotate(180deg);}
+  .acc-body{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+  .acc-item.open .acc-body{max-height:2400px;}
+  .acc-body-inner{padding:0 20px 22px;display:flex;flex-direction:column;gap:11px;}
+  .acc-body-inner p{font-size:13.5px;color:var(--muted);}
+
+  footer{padding-block:40px 48px;}
+  .foot-grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px;padding-bottom:26px;border-bottom:1px solid var(--border);}
+  .foot-col h4{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:12px;font-weight:600;}
+  .foot-col a, .foot-col p{display:block;font-size:14px;margin-bottom:8px;text-decoration:none;color:var(--ink);}
+  .foot-bottom{padding-top:22px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);}
+
+  [data-es], [data-en]{ }
+  body[data-lang="en"] [data-es]{display:none;}
+  body:not([data-lang="en"]) [data-en]{display:none;}
+
+  /* confirm overlay */
+  #confirm-overlay{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;}
+  .confirm-card{max-width:380px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .confirm-badge{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;}
+  .confirm-badge.good{background:var(--good-soft);color:var(--good);}
+  .confirm-badge.bad{background:var(--accent-soft);color:var(--accent-soft-ink);}
+  .confirm-badge svg{width:30px;height:30px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .confirm-brand{display:flex;align-items:center;gap:11px;margin-bottom:6px;}
+  .confirm-brand .brand-mark{width:42px;height:42px;font-size:20px;border-radius:12px;}
+  .confirm-brand span:last-child{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:23px;letter-spacing:-.01em;}
+  .confirm-card h1{font-size:24px;}
+  .confirm-card p{color:var(--muted);font-size:14.5px;}
+  .confirm-hint{font-size:12.5px !important;margin-top:2px;}
+  .confirm-card .btn{margin-top:10px;}
+</style>
+
+<body data-lang="es">
+
+<div id="confirm-overlay" hidden>
+  <div class="confirm-card">
+    <div class="confirm-brand"><span class="brand-mark">S</span><span>SALIXCEL</span></div>
+    <div class="confirm-badge good" id="confirm-badge-good">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>
+    <div class="confirm-badge bad" id="confirm-badge-bad" hidden>
+      <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </div>
+    <div id="confirm-success">
+      <h1 data-es>¡Correo confirmado!</h1>
+      <h1 data-en>Email confirmed!</h1>
+      <p data-es>Ya puedes volver a la app SALIXCEL e iniciar sesión con tu correo y contraseña.</p>
+      <p data-en>You can now go back to the SALIXCEL app and sign in with your email and password.</p>
+    </div>
+    <div id="confirm-failure" hidden>
+      <h1 data-es>No pudimos confirmar tu correo</h1>
+      <h1 data-en>We couldn't confirm your email</h1>
+      <p data-es>El enlace puede haber caducado. Vuelve a la app e intenta crear la cuenta de nuevo.</p>
+      <p data-en>The link may have expired. Go back to the app and try creating the account again.</p>
+    </div>
+    <button type="button" class="btn btn-primary" id="confirm-close">
+      <span data-es>Entendido</span><span data-en>Got it</span>
+    </button>
+    <p class="confirm-hint" data-es>Puedes cerrar esta pestaña.</p>
+    <p class="confirm-hint" data-en>You can close this tab.</p>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="wrap nav-row">
+    <div class="brand"><span class="brand-mark">S</span>SALIXCEL</div>
+    <nav class="links">
+      <a href="#funciones" data-es>Funciones</a><a href="#funciones" data-en>Features</a>
+      <a href="#por-que" data-es>Por qué SALIXCEL</a><a href="#por-que" data-en>Why SALIXCEL</a>
+      <a href="#legal" data-es>Legal</a><a href="#legal" data-en>Legal</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" data-set-lang="es" class="active">ES</button>
+        <button type="button" data-set-lang="en">EN</button>
+      </div>
+      <a href="#descargar" class="btn btn-primary" data-es>Descargar</a>
+      <a href="#descargar" class="btn btn-primary" data-en>Download</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" style="border-top:none;">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>
+          <span data-es>Funciona sin internet</span><span data-en>Works without internet</span>
+        </span>
+        <h1 data-es>El negocio, ordenado desde el celular.</h1>
+        <h1 data-en>Your business, organized from your phone.</h1>
+        <p class="sub" data-es>Ventas, inventario, clientes y deudas en un solo lugar. Sin planillas, sin depender de internet, sin complicarte.</p>
+        <p class="sub" data-en>Sales, inventory, clients and debts in one place. No spreadsheets, no need for internet, no complications.</p>
+        <div class="hero-ctas">
+          <a href="#descargar" class="btn btn-primary soon">
+            <svg class="icon" viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+            <span data-es>Próximamente en Google Play</span><span data-en>Coming soon on Google Play</span>
+          </a>
+          <a href="#funciones" class="btn btn-ghost">
+            <span data-es>Ver funciones</span><span data-en>See features</span>
+          </a>
+        </div>
+        <p class="hero-note" data-es>Gratis para empezar · Tus datos viven en tu propio celular</p>
+        <p class="hero-note" data-en>Free to start · Your data lives on your own phone</p>
+      </div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-topbar"><span data-es>Hoy</span><span data-en>Today</span><span>●●● 100%</span></div>
+          <div class="phone-card accent">
+            <div class="phone-label" data-es>Ventas de hoy</div>
+            <div class="phone-label" data-en>Today's sales</div>
+            <div class="phone-num">$482.50</div>
+          </div>
+          <div class="phone-card">
+            <div class="phone-row">
+              <div class="phone-dot">
+                <svg class="icon" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+              </div>
+              <div class="t"><div class="n" data-es>Camisa talla M</div><div class="n" data-en>Shirt size M</div><div class="s" data-es>Quedan 8</div><div class="s" data-en>8 left</div></div>
+              <div class="v">$18.00</div>
+            </div>
+            <div class="phone-row">
+              <div class="phone-dot">
+                <svg class="icon" viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </div>
+              <div class="t"><div class="n" data-es>Perfume 30ml</div><div class="n" data-en>Perfume 30ml</div><div class="s" data-es>Quedan 3</div><div class="s" data-en>3 left</div></div>
+              <div class="v">$24.50</div>
+            </div>
+            <div class="phone-btn" data-es>+ Nueva venta</div>
+            <div class="phone-btn" data-en>+ New sale</div>
+          </div>
+          <div class="phone-tabbar">
+            <svg class="icon tab on" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 9.5V21h14V9.5"/></svg>
+            <svg class="icon tab" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6"/></svg>
+            <svg class="icon tab" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <svg class="icon tab" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="funciones">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><span data-es>Todo en un lugar</span><span data-en>Everything in one place</span></span>
+        <h2 data-es>Lo que necesita un negocio pequeño, nada de lo que no.</h2>
+        <h2 data-en>What a small business needs, nothing it doesn't.</h2>
+        <p class="sub" data-es>Diseñado para tiendas, negocios de ropa, perfumería, comida y servicios — cualquier negocio que venda productos o atienda clientes.</p>
+        <p class="sub" data-en>Built for shops, clothing stores, perfume shops, food businesses and services — any business that sells products or serves clients.</p>
+      </div>
+      <div class="features" id="feature-grid"></div>
+    </div>
+  </section>
+
+  <section id="por-que">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><span data-es>Filosofía</span><span data-en>Philosophy</span></span>
+        <h2 data-es>Pensado para donde de verdad se usa: el mostrador.</h2>
+        <h2 data-en>Built for where it's actually used: the counter.</h2>
+      </div>
+      <div class="why">
+        <div class="why-item">
+          <div class="num">01</div>
+          <h3 data-es>Sin internet, sin problema</h3>
+          <h3 data-en>No internet, no problem</h3>
+          <p data-es>Todo funciona con o sin señal. Tus datos se guardan en tu celular al instante — no dependes de que la app "cargue".</p>
+          <p data-en>Everything works with or without signal. Your data saves to your phone instantly — no waiting for the app to "load".</p>
+        </div>
+        <div class="why-item">
+          <div class="num">02</div>
+          <h3 data-es>Para toda Latinoamérica</h3>
+          <h3 data-en>Built for the whole region</h3>
+          <p data-es>Elige entre 18 monedas de la región — de pesos a soles a bolívares — y genera facturas con tu RUC/NIT y tus impuestos.</p>
+          <p data-en>Choose from 18 regional currencies — from pesos to soles to bolívares — and generate invoices with your tax ID and taxes.</p>
+        </div>
+        <div class="why-item">
+          <div class="num">03</div>
+          <h3 data-es>Tus datos son tuyos</h3>
+          <h3 data-en>Your data is yours</h3>
+          <p data-es>Vive primero en tu dispositivo. Si quieres respaldo en la nube y usar la app en varios celulares, esa parte es opcional.</p>
+          <p data-en>Lives on your device first. Cloud backup and multi-device sync are there if you want them, never required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="descargar">
+    <div class="wrap">
+      <div class="cta-band">
+        <div>
+          <h2 data-es>Muy pronto en Google Play.</h2>
+          <h2 data-en>Coming soon to Google Play.</h2>
+          <p class="sub2" data-es>SALIXCEL está en las últimas pruebas antes de publicarse. Mientras tanto, puedes escribirnos si quieres ser de los primeros en probarla.</p>
+          <p class="sub2" data-en>SALIXCEL is in final testing before launch. In the meantime, reach out if you'd like to be one of the first to try it.</p>
+        </div>
+        <a href="#contacto" class="btn btn-ghost">
+          <span data-es>Contáctanos</span><span data-en>Get in touch</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="legal">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><span data-es>Transparencia</span><span data-en>Transparency</span></span>
+        <h2 data-es>Términos y Privacidad</h2>
+        <h2 data-en>Terms and Privacy</h2>
+        <p class="sub" data-es>El resumen corto: tus datos se guardan en tu celular, no en un servidor nuestro, salvo que actives el respaldo en la nube tú mismo.</p>
+        <p class="sub" data-en>The short version: your data stays on your phone, not on a server of ours, unless you turn on cloud backup yourself.</p>
+      </div>
+      <div class="accordion" id="legal-accordion"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <div class="brand" style="margin-bottom:6px;"><span class="brand-mark" style="width:24px;height:24px;font-size:12px;">S</span>SALIXCEL</div>
+        <p style="color:var(--muted);font-size:13px;max-width:32ch;" data-es>Gestión de ventas, inventario y clientes para negocios pequeños.</p>
+        <p style="color:var(--muted);font-size:13px;max-width:32ch;" data-en>Sales, inventory and client management for small businesses.</p>
+      </div>
+      <div class="foot-col" id="contacto">
+        <h4 data-es>Contacto</h4><h4 data-en>Contact</h4>
+        <p style="color:var(--muted);" data-es>Escríbenos pronto — estamos preparando este canal.</p>
+        <p style="color:var(--muted);" data-en>Reach out soon — we're setting up this channel.</p>
+      </div>
+      <div class="foot-col">
+        <h4 data-es>Legal</h4><h4 data-en>Legal</h4>
+        <a href="#legal" data-es>Términos y Condiciones</a><a href="#legal" data-en>Terms and Conditions</a>
+        <a href="#legal" data-es>Política de Privacidad</a><a href="#legal" data-en>Privacy Policy</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span data-es>© 2026 SALIXCEL. Todos los derechos reservados.</span>
+      <span data-en>© 2026 SALIXCEL. All rights reserved.</span>
+      <span data-es>Hecho para negocios de Latinoamérica y más allá.</span>
+      <span data-en>Made for businesses across Latin America and beyond.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  function parseParams(str){
+    var out = {};
+    if (!str) return out;
+    str.replace(/^[#?]/, "").split("&").forEach(function(pair){
+      if (!pair) return;
+      var parts = pair.split("=");
+      out[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1] || "");
+    });
+    return out;
+  }
+  var params = Object.assign({}, parseParams(location.search), parseParams(location.hash));
+  if (params.error || params.error_code || params.error_description) {
+    document.getElementById("confirm-badge-good").hidden = true;
+    document.getElementById("confirm-badge-bad").hidden = false;
+    document.getElementById("confirm-success").hidden = true;
+    document.getElementById("confirm-failure").hidden = false;
+    document.getElementById("confirm-overlay").hidden = false;
+  } else if (params.type === "signup" || params.type === "email_change" || params.access_token || params.token_hash || params.code) {
+    document.getElementById("confirm-overlay").hidden = false;
+  }
+  var closeBtn = document.getElementById("confirm-close");
+  if (closeBtn) closeBtn.addEventListener("click", function(){ window.close(); });
+
+  function icon(pathHTML){
+    return '<svg class="icon" viewBox="0 0 24 24">' + pathHTML + '</svg>';
+  }
+  var ICONS = {
+    cart: icon('<path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>'),
+    box: icon('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'),
+    barcode: icon('<rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M7 8v8M10 8v8M13 8v8M16 8v3M16 14v2"/>'),
+    users: icon('<circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="8.5" r="2.6"/><path d="M15.3 12.2c2.6.5 4.2 2.4 4.2 5.3"/>'),
+    coin: icon('<circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M9.5 9.6c0-1.1 1.1-1.9 2.5-1.9s2.5.8 2.5 1.9c0 2.4-5 1.6-5 4 0 1.1 1.1 1.9 2.5 1.9s2.5-.8 2.5-1.9"/>'),
+    globe: icon('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5z"/>'),
+    receipt: icon('<path d="M6 3h12v17l-2.5-1.5L13 20l-2.5-1.5L8 20l-2-1.5V3z"/><path d="M9 8h6M9 11.5h6"/>'),
+    scan: icon('<path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="M7 12h10"/>'),
+    swap: icon('<path d="M4 8h13M13 4l4 4-4 4"/><path d="M20 16H7M11 20l-4-4 4-4"/>'),
+    offline: icon('<path d="M2 8.5a16 16 0 0 1 6-3.4M22 8.5a16 16 0 0 0-8.5-4.2M5.5 12a10.8 10.8 0 0 1 4-2.1M18.5 12a10.8 10.8 0 0 0-2.7-1.9M9 15.5a5.6 5.6 0 0 1 3-1M2 2l20 20"/><circle cx="12" cy="19" r="1"/>'),
+    moon: icon('<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>'),
+    cloud: icon('<path d="M7 18a4.5 4.5 0 0 1-.5-9 5.5 5.5 0 0 1 10.7-1.7A4 4 0 0 1 17 18H7z"/>')
+  };
+
+  var FEATURES = [
+    { i:"cart", es:["Ventas rápidas","Cobra en segundos y registra el método de pago."], en:["Fast sales","Charge in seconds and log the payment method."] },
+    { i:"box", es:["Inventario al día","Stock, costos y mínimos actualizados con cada venta."], en:["Inventory, up to date","Stock, costs and low-stock alerts with every sale."] },
+    { i:"scan", es:["Escáner de código de barras","Escanea productos con la cámara para vender más rápido."], en:["Barcode scanner","Scan products with the camera to sell faster."] },
+    { i:"users", es:["Clientes y deudas","Historial de compras y recordatorios de pago por WhatsApp."], en:["Clients and debts","Purchase history and payment reminders over WhatsApp."] },
+    { i:"globe", es:["Catálogo en línea","Comparte tu catálogo con un enlace, sin crear una tienda aparte."], en:["Online catalog","Share your catalog with a link, no separate store needed."] },
+    { i:"receipt", es:["Facturas completas","Con RUC/NIT, impuestos, número de factura y dirección."], en:["Complete invoices","With tax ID, taxes, invoice number and address."] },
+    { i:"coin", es:["Lector de facturas","Lee recibos de gastos con la cámara, sin escribirlos a mano."], en:["Receipt reader","Reads expense receipts with the camera, no manual typing."] },
+    { i:"swap", es:["18 monedas","De pesos a soles a bolívares — elige la tuya y listo."], en:["18 currencies","From pesos to soles to bolívares — pick yours and go."] },
+    { i:"offline", es:["Funciona sin internet","Tus datos se guardan en el celular al instante."], en:["Works offline","Your data saves to your phone instantly."] }
+  ];
+
+  var grid = document.getElementById("feature-grid");
+  FEATURES.forEach(function(f){
+    var card = document.createElement("div");
+    card.className = "feature";
+    card.innerHTML =
+      '<div class="fi">' + ICONS[f.i] + '</div>' +
+      '<h3 data-es>' + f.es[0] + '</h3><h3 data-en>' + f.en[0] + '</h3>' +
+      '<p data-es>' + f.es[1] + '</p><p data-en>' + f.en[1] + '</p>';
+    grid.appendChild(card);
+  });
+
+  var LEGAL = {
+    terms: {
+      es: { title: "Términos y Condiciones", body: [
+        "Al usar SALIXCEL usted acepta estos Términos. Si no está de acuerdo, no debe usar la aplicación.",
+        "SALIXCEL es una herramienta de gestión de negocio que se proporciona “tal cual”, sin garantías de ningún tipo.",
+        "Toda la información que usted introduce (productos, clientes, ventas, gastos) se guarda directamente en su propio dispositivo. SALIXCEL no tiene acceso remoto a esos datos salvo que usted mismo decida compartirlos activamente.",
+        "Usted es el único responsable de hacer copias de seguridad de su información (función de exportar datos en Configuración) y de la exactitud de los datos que introduce.",
+        "SALIXCEL puede integrarse con servicios opcionales como WhatsApp, siempre por acción directa suya. El uso de esos servicios se rige por sus propios términos.",
+        "SALIXCEL puede mostrar publicidad de terceros en determinadas pantallas para financiar el uso gratuito de la aplicación. No nos hacemos responsables por el contenido de los anuncios mostrados por proveedores externos.",
+        "Está prohibido usar la aplicación para fines ilegales, fraudulentos, o que infrinjan derechos de terceros.",
+        "El contenido, diseño y código de SALIXCEL son propiedad de sus desarrolladores. Los datos que usted introduce son de su propiedad exclusiva.",
+        "En la máxima medida permitida por la ley, SALIXCEL y sus desarrolladores no serán responsables por pérdida de datos, de ingresos, o interrupciones del servicio derivadas del uso de la aplicación.",
+        "Podemos modificar estos Términos periódicamente; la versión vigente estará siempre disponible dentro de la aplicación.",
+        "Usted puede dejar de usar SALIXCEL y desinstalarla en cualquier momento."
+      ]},
+      en: { title: "Terms and Conditions", body: [
+        "By using SALIXCEL you accept these Terms. If you disagree, you should not use the application.",
+        "SALIXCEL is a business management tool provided “as is”, without warranties of any kind.",
+        "All information you enter (products, clients, sales, expenses) is stored directly on your own device. SALIXCEL has no remote access to that data unless you actively choose to share it.",
+        "You are solely responsible for backing up your information (the export data feature in Settings) and for the accuracy of the data you enter.",
+        "SALIXCEL may integrate with optional services such as WhatsApp, always through your direct action. Use of those services is governed by their own terms.",
+        "SALIXCEL may display third-party advertising on certain screens to help fund free use of the application. We are not responsible for the content of ads shown by external providers.",
+        "You may not use the application for illegal or fraudulent purposes, or in a way that infringes on the rights of others.",
+        "The content, design and code of SALIXCEL belong to its developers. Data you enter belongs exclusively to you.",
+        "To the maximum extent permitted by law, SALIXCEL and its developers are not liable for data loss, lost revenue, or service interruptions arising from use of the application.",
+        "We may update these Terms from time to time; the current version will always be available within the application.",
+        "You may stop using SALIXCEL and uninstall it at any time."
+      ]}
+    },
+    privacy: {
+      es: { title: "Política de Privacidad", body: [
+        "En resumen: SALIXCEL guarda la información de tu negocio directamente en tu propio dispositivo. No existe un servidor central que reciba, almacene o venda tus datos.",
+        "Datos que introduces: nombre del negocio, productos, fotos, clientes, ventas, gastos y metas. Todo se guarda localmente en tu dispositivo.",
+        "Funciones opcionales con terceros: si tú lo activas, enviar una factura o recordatorio comparte el texto y el número de teléfono con WhatsApp. Ninguna de estas funciones se activa sola.",
+        "Permisos del dispositivo: cámara/galería (solo para fotos de productos o tu logo, se procesan localmente), contactos (opcional, eliges uno por uno, nunca se sincroniza todo), notificaciones (solo si activas los recordatorios de deudas).",
+        "SALIXCEL no recopila datos de ubicación ni historial de navegación. Algunas pantallas pueden mostrar publicidad de terceros para financiar el uso gratuito de la aplicación; estos anuncios pueden usar identificadores publicitarios de su dispositivo conforme a las políticas del proveedor de anuncios. Puede gestionar sus preferencias de anuncios desde la configuración de su dispositivo.",
+        "Como los datos viven en tu dispositivo, su seguridad depende en gran parte de la seguridad de tu propio celular. Te recomendamos hacer copias de seguridad periódicas.",
+        "Puedes exportar o borrar toda tu información en cualquier momento desde Configuración.",
+        "Esta Política puede actualizarse; la versión vigente estará siempre disponible dentro de la aplicación."
+      ]},
+      en: { title: "Privacy Policy", body: [
+        "In short: SALIXCEL stores your business information directly on your own device. There is no central server that receives, stores, or sells your data.",
+        "Data you enter: business name, products, photos, clients, sales, expenses and goals. All of it is stored locally on your device.",
+        "Optional features with third parties: if you turn it on, sending an invoice or reminder shares the text and phone number with WhatsApp. None of these features turn on by themselves.",
+        "Device permissions: camera/gallery (only for product photos or your logo, processed locally), contacts (optional, you choose one at a time, nothing syncs automatically), notifications (only if you enable debt reminders).",
+        "SALIXCEL does not collect location data or browsing history. Some screens may show third-party advertising to help fund free use of the app; these ads may use your device's advertising identifiers according to the ad provider's policies. You can manage your ad preferences from your device settings.",
+        "Since data lives on your device, its security largely depends on your own phone's security. We recommend backing up your data periodically.",
+        "You can export or delete all your information at any time from Settings.",
+        "This Policy may be updated; the current version will always be available within the application."
+      ]}
+    }
+  };
+
+  var acc = document.getElementById("legal-accordion");
+  ["terms","privacy"].forEach(function(key, idx){
+    var item = document.createElement("div");
+    item.className = "acc-item" + (idx === 0 ? " open" : "");
+    var esC = LEGAL[key].es, enC = LEGAL[key].en;
+    var bodyEs = esC.body.map(function(p){ return '<p data-es>' + p + '</p>'; }).join("");
+    var bodyEn = enC.body.map(function(p){ return '<p data-en>' + p + '</p>'; }).join("");
+    item.innerHTML =
+      '<button type="button" class="acc-head">' +
+        '<span><span data-es>' + esC.title + '</span><span data-en>' + enC.title + '</span></span>' +
+        '<svg class="icon acc-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>' +
+      '</button>' +
+      '<div class="acc-body"><div class="acc-body-inner">' + bodyEs + bodyEn + '</div></div>';
+    item.querySelector(".acc-head").addEventListener("click", function(){
+      item.classList.toggle("open");
+    });
+    acc.appendChild(item);
+  });
+
+  function setLang(lang){
+    document.body.setAttribute("data-lang", lang);
+    document.querySelectorAll("[data-set-lang]").forEach(function(btn){
+      btn.classList.toggle("active", btn.getAttribute("data-set-lang") === lang);
+    });
+    try { localStorage.setItem("salixcel-site-lang", lang); } catch(e){}
+  }
+  document.querySelectorAll("[data-set-lang]").forEach(function(btn){
+    btn.addEventListener("click", function(){ setLang(btn.getAttribute("data-set-lang")); });
+  });
+  var initialLang = "es";
+  try {
+    var saved = localStorage.getItem("salixcel-site-lang");
+    if (saved === "es" || saved === "en") initialLang = saved;
+    else if (!saved && navigator.language && navigator.language.toLowerCase().indexOf("en") === 0) initialLang = "en";
+  } catch(e){}
+  setLang(initialLang);
+})();
+</script>
+</body>
