@@ -4,6 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
     --bg:#FAF8F2;
@@ -202,6 +203,13 @@
   .confirm-card p{color:var(--muted);font-size:14.5px;}
   .confirm-hint{font-size:12.5px !important;margin-top:2px;}
   .confirm-card .btn{margin-top:10px;}
+  .confirm-card .btn{width:100%;justify-content:center;}
+  .confirm-form{width:100%;display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+  .confirm-form input{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:12px;padding:11px 14px;font:inherit;font-size:14.5px;outline:none;}
+  .confirm-form input:focus{border-color:var(--accent);}
+  .confirm-error{color:#B23A22;font-size:12.5px;}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .confirm-error{color:#E38B78;} }
+  :root[data-theme="dark"] .confirm-error{color:#E38B78;}
 </style>
 
 <body data-lang="es">
@@ -222,14 +230,45 @@
       <p data-en>You can now go back to the SALIXCEL app and sign in with your email and password.</p>
     </div>
     <div id="confirm-failure" hidden>
-      <h1 data-es>No pudimos confirmar tu correo</h1>
-      <h1 data-en>We couldn't confirm your email</h1>
-      <p data-es>El enlace puede haber caducado. Vuelve a la app e intenta crear la cuenta de nuevo.</p>
-      <p data-en>The link may have expired. Go back to the app and try creating the account again.</p>
+      <h1 data-es>No pudimos procesar tu solicitud</h1>
+      <h1 data-en>We couldn't process your request</h1>
+      <p data-es>El enlace puede haber caducado. Vuelve a la app e intenta de nuevo.</p>
+      <p data-en>The link may have expired. Go back to the app and try again.</p>
     </div>
     <button type="button" class="btn btn-primary" id="confirm-close">
       <span data-es>Entendido</span><span data-en>Got it</span>
     </button>
+    <p class="confirm-hint" data-es>Puedes cerrar esta pestaña.</p>
+    <p class="confirm-hint" data-en>You can close this tab.</p>
+  </div>
+</div>
+
+<div id="recovery-overlay" hidden>
+  <div class="confirm-card">
+    <div class="confirm-brand"><span class="brand-mark">S</span><span>SALIXCEL</span></div>
+    <div class="confirm-badge good">
+      <svg viewBox="0 0 24 24"><path d="M12 15v2M6 10V7a6 6 0 0 1 12 0v3M5 10h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/></svg>
+    </div>
+    <div id="recovery-form-wrap">
+      <h1 data-es>Elige una contraseña nueva</h1>
+      <h1 data-en>Choose a new password</h1>
+      <p data-es>Escríbela dos veces para confirmarla.</p>
+      <p data-en>Type it twice to confirm.</p>
+      <form class="confirm-form" id="recovery-form">
+        <input type="password" id="recovery-pass1" placeholder="Nueva contraseña" autocomplete="new-password" required>
+        <input type="password" id="recovery-pass2" placeholder="Repite la contraseña" autocomplete="new-password" required>
+        <p class="confirm-error" id="recovery-error" hidden></p>
+        <button type="submit" class="btn btn-primary" id="recovery-submit">
+          <span data-es>Guardar contraseña</span><span data-en>Save password</span>
+        </button>
+      </form>
+    </div>
+    <div id="recovery-success" hidden>
+      <h1 data-es>¡Contraseña actualizada!</h1>
+      <h1 data-en>Password updated!</h1>
+      <p data-es>Ya puedes volver a la app SALIXCEL e iniciar sesión con tu nueva contraseña.</p>
+      <p data-en>You can now go back to the SALIXCEL app and sign in with your new password.</p>
+    </div>
     <p class="confirm-hint" data-es>Puedes cerrar esta pestaña.</p>
     <p class="confirm-hint" data-en>You can close this tab.</p>
   </div>
@@ -439,6 +478,49 @@
     document.getElementById("confirm-success").hidden = true;
     document.getElementById("confirm-failure").hidden = false;
     document.getElementById("confirm-overlay").hidden = false;
+  } else if (params.type === "recovery") {
+    document.getElementById("recovery-overlay").hidden = false;
+    if (window.supabase && window.supabase.createClient) {
+      var sbClient = window.supabase.createClient(
+        "https://xvhpibmsxrkwwjuwpohn.supabase.co",
+        "sb_publishable_qGmWVu_eZfppcZMIT2lJTQ_zmT7yRRD"
+      );
+      var form = document.getElementById("recovery-form");
+      var errEl = document.getElementById("recovery-error");
+      form.addEventListener("submit", function(ev){
+        ev.preventDefault();
+        errEl.hidden = true;
+        var p1 = document.getElementById("recovery-pass1").value;
+        var p2 = document.getElementById("recovery-pass2").value;
+        var isEn = document.body.getAttribute("data-lang") === "en";
+        if (p1.length < 6) {
+          errEl.textContent = isEn ? "Password must be at least 6 characters" : "La contraseña debe tener al menos 6 caracteres";
+          errEl.hidden = false;
+          return;
+        }
+        if (p1 !== p2) {
+          errEl.textContent = isEn ? "Passwords don't match" : "Las contraseñas no coinciden";
+          errEl.hidden = false;
+          return;
+        }
+        var btn = document.getElementById("recovery-submit");
+        btn.disabled = true;
+        sbClient.auth.updateUser({ password: p1 }).then(function(res){
+          btn.disabled = false;
+          if (res.error) {
+            errEl.textContent = res.error.message || (isEn ? "Something went wrong" : "Algo salió mal");
+            errEl.hidden = false;
+            return;
+          }
+          document.getElementById("recovery-form-wrap").hidden = true;
+          document.getElementById("recovery-success").hidden = false;
+        }).catch(function(){
+          btn.disabled = false;
+          errEl.textContent = isEn ? "Could not connect" : "No se pudo conectar";
+          errEl.hidden = false;
+        });
+      });
+    }
   } else if (params.type === "signup" || params.type === "email_change" || params.access_token || params.token_hash || params.code) {
     document.getElementById("confirm-overlay").hidden = false;
   }
