@@ -196,7 +196,7 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
   };
   window.closeLightbox = function () { document.getElementById("lightbox").classList.remove("show"); };
 
-  window.sendOrder = function () {
+  window.sendOrder = async function () {
     var name = document.getElementById("cName").value.trim();
     if (!name) { alert("Escribe tu nombre"); return; }
     var phone = document.getElementById("cPhone").value.trim();
@@ -210,23 +210,32 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
       total += p.price * cart[id];
     });
 
-    fetch(SUPABASE_URL + "/rest/v1/catalog_orders", {
-      method: "POST",
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: "Bearer " + SUPABASE_ANON_KEY,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal"
-      },
-      body: JSON.stringify({
-        business_id: businessId,
-        items: items,
-        total: total,
-        client_name: name,
-        client_phone: phone,
-        status: "Pendiente"
-      })
-    }).catch(function () {});
+    var saveError = "";
+    try {
+      var res = await fetch(SUPABASE_URL + "/rest/v1/catalog_orders", {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify({
+          business_id: businessId,
+          items: items,
+          total: total,
+          client_name: name,
+          client_phone: phone,
+          status: "Pendiente"
+        })
+      });
+      if (!res.ok) {
+        var body = await res.text().catch(function () { return ""; });
+        saveError = "HTTP " + res.status + (body ? ": " + body.slice(0, 200) : "");
+      }
+    } catch (e) {
+      saveError = (e && e.message) || "network error";
+    }
 
     var text = "Pedido de " + name + (phone ? " (" + phone + ")" : "") + ":\n" + lines.join("\n") + "\nTotal: " + money(total) + (note ? "\nNota: " + note : "");
     var sellerPhone = ((DATA.business.social && DATA.business.social.whatsapp) || "").replace(/\D/g, "");
@@ -237,6 +246,7 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
     document.getElementById("app").innerHTML =
       '<div class="sent-box"><div class="ok">✓</div><p style="font-weight:600;margin-bottom:6px">¡Pedido enviado!</p>' +
       '<p style="color:var(--muted);font-size:13.5px;margin-bottom:18px">' + esc(bizName) + " recibirá tu pedido y se pondrá en contacto contigo.</p>" +
+      (saveError ? '<div class="err-box">No se pudo guardar automáticamente en el sistema (' + esc(saveError) + '). Asegúrate de que el negocio reciba tu mensaje por otro medio.</div>' : "") +
       '<button class="primary" style="width:auto;padding:10px 22px" onclick="location.reload()">Ver catálogo de nuevo</button></div>';
   };
 
