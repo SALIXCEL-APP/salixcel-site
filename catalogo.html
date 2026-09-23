@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo — SALIXCEL</title>
+<style>
+:root{--accent:#6B2FB3;--bg:#FAFAF6;--card:#fff;--line:#EAE7DD;--muted:#8A887F;--ink:#1C1C1A;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,sans-serif}
+header{background:var(--accent);color:#fff;padding:22px 16px;text-align:center}
+header h1{margin:0;font-size:20px}
+header p{margin:4px 0 0;font-size:12px;opacity:.8}
+.wrap{max-width:480px;margin:0 auto;padding:16px;padding-bottom:110px}
+.cat-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:20px 0 8px}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:8px}
+.item.out{opacity:.55}
+.thumb{width:48px;height:48px;border-radius:12px;object-fit:cover;flex-shrink:0;cursor:zoom-in}
+.thumb-empty{width:48px;height:48px;border-radius:12px;background:#F1EFE8;flex-shrink:0}
+.info{flex:1;min-width:0}
+.info b{display:block;font-size:14px}
+.info span{font-size:13px;color:var(--muted)}
+button{font:inherit;border:0;cursor:pointer;border-radius:10px}
+.add{width:32px;height:32px;background:var(--accent);color:#fff;font-size:18px;flex-shrink:0}
+.qtybox{display:flex;align-items:center;gap:8px;background:#F1EFE8;border-radius:99px;padding:4px;flex-shrink:0}
+.qtybox button{width:26px;height:26px;background:#fff;border-radius:50%}
+.cartbar{position:fixed;bottom:16px;left:16px;right:16px;max-width:448px;margin:0 auto;background:var(--accent);color:#fff;border-radius:16px;padding:14px 18px;display:none;justify-content:space-between;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.18);cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.modal.show{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:20px;max-height:85vh;overflow:auto}
+.sheet h2{margin:0 0 14px;font-size:17px}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:12px;font:inherit;background:#fff}
+.primary{width:100%;background:var(--accent);color:#fff;padding:13px;font-weight:600;font-size:15px}
+.social{text-align:center;margin-top:24px;font-size:12px;color:var(--muted)}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:30;padding:24px}
+.lightbox.show{display:flex}
+.lightbox img{max-width:100%;max-height:100%;border-radius:16px;object-fit:contain}
+.lightbox .lbclose{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.err-box{margin:16px;padding:14px;background:#FBEEE8;border-radius:12px;color:#B23A22;font-size:13px;white-space:pre-wrap;word-break:break-word}
+.sent-box{text-align:center;padding:30px 16px}
+.sent-box .ok{width:56px;height:56px;border-radius:50%;background:#E4F1EA;color:#3F7D5C;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+.powered{display:block;text-align:center;padding:14px;font-size:11.5px;color:var(--muted)}
+.powered a{color:var(--accent);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<header><h1 id="bizName">SALIXCEL</h1><p>Catálogo y pedidos</p></header>
+<div class="wrap"><div id="app"><div class="empty">Cargando…</div></div><a class="powered" href="https://delgadoangie196-ops.github.io/salixcel-site/" target="_blank" rel="noopener">Catálogo hecho con <span>SALIXCEL</span></a></div>
+<div class="cartbar" id="cartbar" onclick="openModal()"><span id="cartCount"></span><span id="cartTotal"></span></div>
+<div class="modal" id="modal"><div class="sheet" id="sheetInner"></div></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()"><button class="lbclose" onclick="closeLightbox()">✕</button><img id="lightboxImg" src=""></div>
+<script>
+(function () {
+  "use strict";
+
+  var SUPABASE_URL = "https://xvhpibmsxrkwwjuwpohn.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_qGmWVu_eZfppcZMIT2lJTQ_zmT7yRRD";
+
+  window.onerror = function (msg) {
+    var app = document.getElementById("app");
+    if (app) app.innerHTML = '<div class="err-box"><b>No se pudo mostrar el catálogo</b><br>' + String(msg) + "</div>";
+  };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function getSlug() {
+    var params = new URLSearchParams(window.location.search);
+    return (params.get("t") || params.get("tienda") || "").trim();
+  }
+
+  function showError(msg) {
+    document.getElementById("app").innerHTML = '<div class="empty">' + esc(msg) + "</div>";
+  }
+
+  var DATA = null;
+  var businessId = null;
+  var cart = {};
+
+  function money(n) {
+    var cur = (DATA && DATA.business && DATA.business.currency) || "$";
+    return cur + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  var slug = getSlug();
+  if (!slug) {
+    showError("Falta el enlace completo del negocio. Pide el enlace completo a quien te compartió este catálogo.");
+  } else {
+    fetch(SUPABASE_URL + "/rest/v1/public_catalogs?slug=eq." + encodeURIComponent(slug) + "&select=business_id,payload", {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY }
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (rows) {
+        if (!rows || !rows.length) {
+          showError("No encontramos este catálogo. Puede que el enlace esté mal escrito.");
+          return;
+        }
+        businessId = rows[0].business_id;
+        DATA = rows[0].payload || { business: {}, categories: [], products: [] };
+        var bizName = (DATA.business && DATA.business.name) || "Catálogo";
+        document.title = bizName + " — Catálogo";
+        document.getElementById("bizName").textContent = bizName;
+        render();
+      })
+      .catch(function () {
+        showError("No se pudo cargar el catálogo. Revisa tu conexión e intenta de nuevo.");
+      });
+  }
+
+  function render() {
+    var app = document.getElementById("app");
+    var products = DATA.products || [];
+    if (!products.length) {
+      app.innerHTML = '<div class="empty">Este catálogo aún no tiene productos.</div>';
+      return;
+    }
+    var html = "";
+    var allCats = (DATA.categories || []).concat(products.map(function (p) { return p.category; }))
+      .filter(function (c, i, arr) { return arr.indexOf(c) === i; });
+    allCats.forEach(function (cat) {
+      var items = products.filter(function (p) { return p.category === cat; });
+      if (!items.length) return;
+      html += '<div class="cat-title">' + esc(cat) + "</div>";
+      items.forEach(function (p) {
+        var out = p.stock !== null && p.stock !== undefined && p.stock <= 0;
+        var qty = cart[p.id] || 0;
+        html += '<div class="item' + (out ? " out" : "") + '">'
+          + (p.image ? '<img class="thumb" src="' + esc(p.image) + '" onclick="event.stopPropagation();openLightbox(' + "'" + esc(p.image) + "'" + ')">' : '<div class="thumb-empty"></div>')
+          + "<div class=\"info\"><b>" + esc(p.name) + "</b><span>" + money(p.price) + (out ? " · agotado" : "") + "</span></div>"
+          + (qty > 0
+            ? '<div class="qtybox"><button onclick="changeQty(' + "'" + p.id + "'" + ',-1)">−</button><span>' + qty + '</span><button onclick="changeQty(' + "'" + p.id + "'" + ',1)" ' + (out ? "disabled" : "") + ">+</button></div>"
+            : '<button class="add" ' + (out ? "disabled" : "") + ' onclick="changeQty(' + "'" + p.id + "'" + ',1)">+</button>')
+          + "</div>";
+      });
+    });
+    app.innerHTML = html;
+    var social = (DATA.business && DATA.business.social) || {};
+    var items = [];
+    if (social.instagram) items.push("Instagram: " + esc(social.instagram));
+    if (social.facebook) items.push("Facebook: " + esc(social.facebook));
+    if (social.tiktok) items.push("TikTok: " + esc(social.tiktok));
+    if (social.web) items.push("Web: " + esc(social.web));
+    if (items.length) app.innerHTML += '<div class="social">' + items.join(" · ") + "</div>";
+    updateCartbar();
+  }
+
+  window.changeQty = function (id, d) {
+    cart[id] = (cart[id] || 0) + d;
+    if (cart[id] <= 0) delete cart[id];
+    render();
+  };
+
+  function updateCartbar() {
+    var bar = document.getElementById("cartbar");
+    var ids = Object.keys(cart);
+    if (!ids.length) { bar.style.display = "none"; return; }
+    var count = 0, total = 0;
+    ids.forEach(function (id) {
+      var p = DATA.products.find(function (x) { return x.id === id; });
+      count += cart[id]; total += p.price * cart[id];
+    });
+    document.getElementById("cartCount").textContent = count + " producto(s)";
+    document.getElementById("cartTotal").textContent = money(total);
+    bar.style.display = "flex";
+  }
+
+  window.openModal = function () {
+    var ids = Object.keys(cart);
+    var total = 0, lines = "";
+    ids.forEach(function (id) {
+      var p = DATA.products.find(function (x) { return x.id === id; });
+      lines += "<div>" + esc(p.name) + " ×" + cart[id] + " — " + money(p.price * cart[id]) + "</div>";
+      total += p.price * cart[id];
+    });
+    document.getElementById("sheetInner").innerHTML =
+      "<h2>Completar pedido</h2>" +
+      '<div id="summary" style="margin-bottom:14px;font-size:14px">' + lines + '<div style="margin-top:8px;font-weight:700">Total: ' + money(total) + "</div></div>" +
+      '<input id="cName" placeholder="Tu nombre">' +
+      '<input id="cPhone" placeholder="Tu teléfono (opcional)">' +
+      '<textarea id="cNote" placeholder="Nota (opcional)" rows="2"></textarea>' +
+      '<button class="primary" onclick="sendOrder()">Enviar pedido</button>' +
+      '<button onclick="closeModal()" style="width:100%;background:transparent;color:var(--muted);margin-top:8px;padding:10px">Cancelar</button>';
+    document.getElementById("modal").classList.add("show");
+  };
+  window.closeModal = function () { document.getElementById("modal").classList.remove("show"); };
+  window.openLightbox = function (src) {
+    document.getElementById("lightboxImg").src = src;
+    document.getElementById("lightbox").classList.add("show");
+  };
+  window.closeLightbox = function () { document.getElementById("lightbox").classList.remove("show"); };
+
+  window.sendOrder = function () {
+    var name = document.getElementById("cName").value.trim();
+    if (!name) { alert("Escribe tu nombre"); return; }
+    var phone = document.getElementById("cPhone").value.trim();
+    var note = document.getElementById("cNote").value.trim();
+    var ids = Object.keys(cart);
+    var total = 0, lines = [], items = [];
+    ids.forEach(function (id) {
+      var p = DATA.products.find(function (x) { return x.id === id; });
+      lines.push(p.name + " x" + cart[id]);
+      items.push({ productId: p.id, name: p.name, price: p.price, qty: cart[id] });
+      total += p.price * cart[id];
+    });
+
+    fetch(SUPABASE_URL + "/rest/v1/catalog_orders", {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: "Bearer " + SUPABASE_ANON_KEY,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({
+        business_id: businessId,
+        items: items,
+        total: total,
+        client_name: name,
+        client_phone: phone,
+        status: "Pendiente"
+      })
+    }).catch(function () {});
+
+    var text = "Pedido de " + name + (phone ? " (" + phone + ")" : "") + ":\n" + lines.join("\n") + "\nTotal: " + money(total) + (note ? "\nNota: " + note : "");
+    var sellerPhone = ((DATA.business.social && DATA.business.social.whatsapp) || "").replace(/\D/g, "");
+    var bizName = (DATA.business && DATA.business.name) || "El negocio";
+    cart = {};
+    closeModal();
+    if (sellerPhone) window.open("https://wa.me/" + sellerPhone + "?text=" + encodeURIComponent(text), "_blank");
+    document.getElementById("app").innerHTML =
+      '<div class="sent-box"><div class="ok">✓</div><p style="font-weight:600;margin-bottom:6px">¡Pedido enviado!</p>' +
+      '<p style="color:var(--muted);font-size:13.5px;margin-bottom:18px">' + esc(bizName) + " recibirá tu pedido y se pondrá en contacto contigo.</p>" +
+      '<button class="primary" style="width:auto;padding:10px 22px" onclick="location.reload()">Ver catálogo de nuevo</button></div>';
+  };
+})();
+</script>
+</body>
+</html>
