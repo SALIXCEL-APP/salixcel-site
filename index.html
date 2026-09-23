@@ -190,6 +190,11 @@
   body[data-lang="en"] [data-es]{display:none;}
   body:not([data-lang="en"]) [data-en]{display:none;}
 
+  #scroll-down-btn{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--accent-ink);border:none;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:50;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s ease, transform .2s ease;}
+  #scroll-down-btn.show{opacity:1;pointer-events:auto;transform:translateY(0);}
+  #scroll-down-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  @media (max-width:640px){ #scroll-down-btn{right:16px;bottom:16px;} }
+
   /* confirm overlay */
   #confirm-overlay{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;}
   .confirm-card{max-width:380px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
@@ -281,6 +286,7 @@
     <nav class="links">
       <a href="#funciones" data-es>Funciones</a><a href="#funciones" data-en>Features</a>
       <a href="#por-que" data-es>Por qué SALIXCEL</a><a href="#por-que" data-en>Why SALIXCEL</a>
+      <a href="#preguntas" data-es>Preguntas</a><a href="#preguntas" data-en>FAQ</a>
       <a href="#legal" data-es>Legal</a><a href="#legal" data-en>Legal</a>
     </nav>
     <div class="nav-actions">
@@ -416,6 +422,19 @@
     </div>
   </section>
 
+  <section id="preguntas">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><span data-es>Dudas comunes</span><span data-en>Common questions</span></span>
+        <h2 data-es>Preguntas frecuentes</h2>
+        <h2 data-en>Frequently asked questions</h2>
+        <p class="sub" data-es>Lo que la mayoría pregunta antes o durante el uso de la aplicación.</p>
+        <p class="sub" data-en>What most people ask before or while using the app.</p>
+      </div>
+      <div class="accordion" id="faq-accordion"></div>
+    </div>
+  </section>
+
   <section id="legal">
     <div class="wrap">
       <div class="section-head">
@@ -440,8 +459,7 @@
       </div>
       <div class="foot-col" id="contacto">
         <h4 data-es>Contacto</h4><h4 data-en>Contact</h4>
-        <p style="color:var(--muted);" data-es>Escríbenos pronto — estamos preparando este canal.</p>
-        <p style="color:var(--muted);" data-en>Reach out soon — we're setting up this channel.</p>
+        <a href="mailto:salixcel9@gmail.com">salixcel9@gmail.com</a>
       </div>
       <div class="foot-col">
         <h4 data-es>Legal</h4><h4 data-en>Legal</h4>
@@ -457,6 +475,10 @@
     </div>
   </div>
 </footer>
+
+<button type="button" id="scroll-down-btn" aria-label="Ir al final">
+  <svg viewBox="0 0 24 24"><path d="M12 4v16M5 13l7 7 7-7"/></svg>
+</button>
 
 <script>
 (function(){
@@ -547,15 +569,15 @@
   };
 
   var FEATURES = [
-    { i:"cart", es:["Ventas rápidas","Cobra en segundos y registra el método de pago."], en:["Fast sales","Charge in seconds and log the payment method."] },
-    { i:"box", es:["Inventario al día","Stock, costos y mínimos actualizados con cada venta."], en:["Inventory, up to date","Stock, costs and low-stock alerts with every sale."] },
-    { i:"scan", es:["Escáner de código de barras","Escanea productos con la cámara para vender más rápido."], en:["Barcode scanner","Scan products with the camera to sell faster."] },
-    { i:"users", es:["Clientes y deudas","Historial de compras y recordatorios de pago por WhatsApp."], en:["Clients and debts","Purchase history and payment reminders over WhatsApp."] },
-    { i:"globe", es:["Catálogo en línea","Comparte tu catálogo con un enlace, sin crear una tienda aparte."], en:["Online catalog","Share your catalog with a link, no separate store needed."] },
-    { i:"receipt", es:["Facturas completas","Con RUC/NIT, impuestos, número de factura y dirección."], en:["Complete invoices","With tax ID, taxes, invoice number and address."] },
-    { i:"coin", es:["Lector de facturas","Lee recibos de gastos con la cámara, sin escribirlos a mano."], en:["Receipt reader","Reads expense receipts with the camera, no manual typing."] },
-    { i:"swap", es:["18 monedas","De pesos a soles a bolívares — elige la tuya y listo."], en:["18 currencies","From pesos to soles to bolívares — pick yours and go."] },
-    { i:"offline", es:["Funciona sin internet","Tus datos se guardan en el celular al instante."], en:["Works offline","Your data saves to your phone instantly."] }
+    { i:"cart", es:["Ventas rápidas","Cobra en segundos y registra el método de pago, para saber exactamente cuánto vendiste cada día."], en:["Fast sales","Charge in seconds and log the payment method, so you always know exactly how much you sold each day."] },
+    { i:"box", es:["Inventario al día","Stock, costos y mínimos actualizados con cada venta, así nunca te quedas sin saber qué reponer."], en:["Inventory, up to date","Stock, costs and low-stock alerts with every sale, so you always know what to restock."] },
+    { i:"scan", es:["Escáner de código de barras","Escanea productos con la cámara para vender más rápido y sin errores al cobrar."], en:["Barcode scanner","Scan products with the camera to sell faster and avoid pricing mistakes at checkout."] },
+    { i:"users", es:["Clientes y deudas","Historial de compras y recordatorios de pago por WhatsApp, para dejar de perseguir cobros de memoria."], en:["Clients and debts","Purchase history and payment reminders over WhatsApp, so you stop chasing payments from memory."] },
+    { i:"globe", es:["Catálogo en línea","Comparte tu catálogo con un enlace, sin crear una tienda aparte, para que tus clientes vean lo que vendes desde su celular."], en:["Online catalog","Share your catalog with a link, no separate store needed, so clients can browse what you sell from their phone."] },
+    { i:"receipt", es:["Facturas completas","Con RUC/NIT, impuestos, número de factura y dirección, listas para entregar en segundos."], en:["Complete invoices","With tax ID, taxes, invoice number and address, ready to hand over in seconds."] },
+    { i:"coin", es:["Lector de facturas","Lee recibos de gastos con la cámara, sin escribirlos a mano, para saber en qué se te va el dinero."], en:["Receipt reader","Reads expense receipts with the camera, no manual typing, so you know exactly where your money goes."] },
+    { i:"swap", es:["18 monedas","De pesos a soles a bolívares — elige la tuya y lleva tus cuentas en la moneda que de verdad usas."], en:["18 currencies","From pesos to soles to bolívares — pick yours and keep your books in the currency you actually use."] },
+    { i:"offline", es:["Funciona sin internet","Tus datos se guardan en el celular al instante, para que un corte de señal nunca te detenga una venta."], en:["Works offline","Your data saves to your phone instantly, so a signal drop never stops a sale."] }
   ];
 
   var grid = document.getElementById("feature-grid");
@@ -572,72 +594,52 @@
   var LEGAL = {
     terms: {
       es: { title: "Términos y Condiciones", body: [
-        "Al descargar, instalar o usar SALIXCEL usted acepta estos Términos y Condiciones y nuestra Política de Privacidad en su totalidad. Si no está de acuerdo, no debe usar la aplicación.",
-        "Usted declara que tiene la capacidad legal para operar un negocio en su país o jurisdicción, y que el uso que le da a SALIXCEL cumple con las leyes que le apliquen.",
-        "SALIXCEL es una herramienta de gestión de negocio (ventas, inventario, clientes, deudas, gastos, catálogo, facturación informal) que se proporciona “tal cual” y “según disponibilidad”, sin garantías de ningún tipo, expresas o implícitas, incluyendo -sin limitarse a- garantías de comerciabilidad, idoneidad para un fin particular o disponibilidad ininterrumpida.",
-        "SALIXCEL funciona por completo sin necesidad de crear una cuenta; en ese caso, sus datos se guardan solo en su dispositivo. Si usted decide crear una cuenta (opcional), algunos datos de su negocio se sincronizan y almacenan en servidores de terceros -ver Política de Privacidad- para poder usar la app en más de un dispositivo. Usted es responsable de la confidencialidad de su contraseña y de toda actividad realizada desde su cuenta; no garantizamos disponibilidad continua de este servicio opcional.",
-        "Usted es el único responsable de la exactitud, legalidad y actualización de la información que introduce, y de mantener copias de seguridad periódicas (función de exportar datos en Configuración). No garantizamos la recuperación de datos perdidos por fallas del dispositivo, desinstalación, pérdida del teléfono o interrupciones del servicio de sincronización.",
-        "Los documentos y “facturas” que genera SALIXCEL son comprobantes informales para uso interno del negocio. No constituyen facturación electrónica con validez fiscal en ningún país, salvo que usted mismo cumpla de forma independiente con los requisitos de su autoridad tributaria. Usted es el único responsable de sus obligaciones fiscales, de facturación y contables. SALIXCEL no ofrece asesoría legal, contable ni fiscal.",
-        "El escáner de código de barras y el lector de recibos procesan las imágenes directamente en su dispositivo; no se suben a ningún servidor salvo que usted mismo decida adjuntarlas (por ejemplo, como foto de un producto) con una cuenta en la nube activa. No garantizamos la exactitud de los datos leídos automáticamente; revíselos antes de guardarlos.",
-        "La función de importar clientes desde sus contactos requiere que usted elija cada contacto manualmente; SALIXCEL no accede ni sincroniza su lista completa de contactos sin su acción directa.",
-        "SALIXCEL puede integrarse con o depender de servicios de terceros (por ejemplo, para el respaldo en la nube, el envío de correos de cuenta, o para compartir mensajes por WhatsApp). El uso de esos servicios se rige por sus propios términos, sobre los cuales no tenemos control. No somos responsables por interrupciones, errores o pérdidas de datos originadas en servicios de terceros.",
-        "SALIXCEL puede mostrar publicidad de terceros en determinadas pantallas para financiar el uso gratuito de la aplicación. No respaldamos ni nos hacemos responsables por el contenido, la exactitud o las prácticas de los anunciantes.",
-        "Está prohibido usar la aplicación para fines ilegales o fraudulentos, que infrinjan derechos de terceros, intentar vulnerar su seguridad, o interferir con su funcionamiento normal.",
-        "El contenido, diseño, marca y código de SALIXCEL son propiedad de sus desarrolladores. Los datos que usted introduce sobre su propio negocio son de su exclusiva propiedad.",
-        "En la máxima medida permitida por la ley aplicable, SALIXCEL y sus desarrolladores no serán responsables por daños indirectos, incidentales, especiales, consecuentes o punitivos, ni por pérdida de datos, ingresos, ganancias u oportunidades de negocio, que surjan del uso o la imposibilidad de usar la aplicación. En ningún caso nuestra responsabilidad total excederá el monto que usted haya pagado, en su caso, por el uso de la aplicación en los últimos doce meses (que, para la versión gratuita, es cero).",
-        "Usted acepta defender, indemnizar y mantener libres de responsabilidad a SALIXCEL y sus desarrolladores frente a cualquier reclamo, pérdida o gasto (incluyendo honorarios legales razonables) que surja de: su uso de la aplicación, su incumplimiento de estos Términos, su violación de cualquier ley o derecho de terceros, o los datos, productos o servicios de su negocio.",
-        "Podemos modificar estos Términos, o suspender o discontinuar la aplicación o alguna de sus funciones, en cualquier momento. La versión vigente estará siempre disponible dentro de la aplicación. El uso continuado después de una modificación constituye su aceptación de los Términos actualizados.",
-        "Si alguna disposición de estos Términos se considera inválida o inaplicable, las demás disposiciones seguirán teniendo plena vigencia.",
-        "Para preguntas sobre estos Términos, escríbanos al correo de contacto indicado en Configuración → Contacto y notificaciones, o a través de los canales de nuestro sitio web.",
-        "Usted puede dejar de usar SALIXCEL, desinstalarla, o eliminar su cuenta y sus datos, en cualquier momento."
+        "Al usar SALIXCEL usted acepta estos Términos. Si no está de acuerdo, no debe usar la aplicación.",
+        "SALIXCEL es una herramienta de gestión de negocio que se proporciona “tal cual”, sin garantías de ningún tipo.",
+        "Toda la información que usted introduce (productos, clientes, ventas, gastos) se guarda directamente en su propio dispositivo. SALIXCEL no tiene acceso remoto a esos datos salvo que usted mismo decida compartirlos activamente.",
+        "Usted es el único responsable de hacer copias de seguridad de su información (función de exportar datos en Configuración) y de la exactitud de los datos que introduce.",
+        "SALIXCEL puede integrarse con servicios opcionales como WhatsApp, siempre por acción directa suya. El uso de esos servicios se rige por sus propios términos.",
+        "SALIXCEL puede mostrar publicidad de terceros en determinadas pantallas para financiar el uso gratuito de la aplicación. No nos hacemos responsables por el contenido de los anuncios mostrados por proveedores externos.",
+        "Está prohibido usar la aplicación para fines ilegales, fraudulentos, o que infrinjan derechos de terceros.",
+        "El contenido, diseño y código de SALIXCEL son propiedad de sus desarrolladores. Los datos que usted introduce son de su propiedad exclusiva.",
+        "En la máxima medida permitida por la ley, SALIXCEL y sus desarrolladores no serán responsables por pérdida de datos, de ingresos, o interrupciones del servicio derivadas del uso de la aplicación.",
+        "Podemos modificar estos Términos periódicamente; la versión vigente estará siempre disponible dentro de la aplicación.",
+        "Usted puede dejar de usar SALIXCEL y desinstalarla en cualquier momento."
       ]},
       en: { title: "Terms and Conditions", body: [
-        "By downloading, installing or using SALIXCEL you accept these Terms and Conditions and our Privacy Policy in full. If you disagree, you should not use the application.",
-        "You represent that you have the legal capacity to operate a business in your country or jurisdiction, and that your use of SALIXCEL complies with the laws that apply to you.",
-        "SALIXCEL is a business management tool (sales, inventory, clients, debts, expenses, catalog, informal invoicing) provided “as is” and “as available”, without warranties of any kind, express or implied, including -without limitation- warranties of merchantability, fitness for a particular purpose, or uninterrupted availability.",
-        "SALIXCEL works fully without creating an account; in that case, your data is stored only on your device. If you choose to create an account (optional), some of your business data is synced and stored on third-party servers -see Privacy Policy- so you can use the app on more than one device. You are responsible for keeping your password confidential and for all activity under your account; we do not guarantee continuous availability of this optional service.",
-        "You are solely responsible for the accuracy, legality and currency of the information you enter, and for keeping regular backups (the export data feature in Settings). We do not guarantee recovery of data lost due to device failure, uninstallation, loss of your phone, or interruptions to the sync service.",
-        "The documents and “invoices” generated by SALIXCEL are informal receipts for internal business use. They do not constitute a legally valid electronic invoice in any country, unless you independently comply with your tax authority's requirements. You are solely responsible for your tax, invoicing and accounting obligations. SALIXCEL does not provide legal, accounting or tax advice.",
-        "The barcode scanner and receipt reader process images directly on your device; they are not uploaded to any server unless you choose to attach them yourself (e.g., as a product photo) while a cloud account is active. We do not guarantee the accuracy of data read automatically; review it before saving.",
-        "The feature to import clients from your contacts requires you to pick each contact manually; SALIXCEL does not access or sync your full contact list without your direct action.",
-        "SALIXCEL may integrate with or depend on third-party services (for example, cloud backup, account emails, or sharing messages via WhatsApp). Use of those services is governed by their own terms, which we do not control. We are not responsible for interruptions, errors, or data loss originating from third-party services.",
-        "SALIXCEL may display third-party advertising on certain screens to help fund free use of the application. We do not endorse and are not responsible for the content, accuracy, or practices of advertisers.",
-        "You may not use the application for illegal or fraudulent purposes, in a way that infringes on the rights of others, attempt to compromise its security, or interfere with its normal operation.",
-        "The content, design, branding and code of SALIXCEL belong to its developers. Data you enter about your own business belongs exclusively to you.",
-        "To the maximum extent permitted by applicable law, SALIXCEL and its developers are not liable for indirect, incidental, special, consequential or punitive damages, nor for loss of data, revenue, profits or business opportunities, arising from use or inability to use the application. In no case will our total liability exceed the amount you have paid, if any, for use of the application in the past twelve months (which, for the free version, is zero).",
-        "You agree to defend, indemnify and hold harmless SALIXCEL and its developers against any claim, loss or expense (including reasonable legal fees) arising from: your use of the application, your breach of these Terms, your violation of any law or third-party right, or your business's data, products or services.",
-        "We may modify these Terms, or suspend or discontinue the application or any of its features, at any time. The current version will always be available within the application. Continued use after a change constitutes your acceptance of the updated Terms.",
-        "If any provision of these Terms is found invalid or unenforceable, the remaining provisions will remain in full effect.",
-        "For questions about these Terms, write to us at the contact email listed in Settings → Contact and notifications, or through the channels on our website.",
-        "You may stop using SALIXCEL, uninstall it, or delete your account and data, at any time."
+        "By using SALIXCEL you accept these Terms. If you disagree, you should not use the application.",
+        "SALIXCEL is a business management tool provided “as is”, without warranties of any kind.",
+        "All information you enter (products, clients, sales, expenses) is stored directly on your own device. SALIXCEL has no remote access to that data unless you actively choose to share it.",
+        "You are solely responsible for backing up your information (the export data feature in Settings) and for the accuracy of the data you enter.",
+        "SALIXCEL may integrate with optional services such as WhatsApp, always through your direct action. Use of those services is governed by their own terms.",
+        "SALIXCEL may display third-party advertising on certain screens to help fund free use of the application. We are not responsible for the content of ads shown by external providers.",
+        "You may not use the application for illegal or fraudulent purposes, or in a way that infringes on the rights of others.",
+        "The content, design and code of SALIXCEL belong to its developers. Data you enter belongs exclusively to you.",
+        "To the maximum extent permitted by law, SALIXCEL and its developers are not liable for data loss, lost revenue, or service interruptions arising from use of the application.",
+        "We may update these Terms from time to time; the current version will always be available within the application.",
+        "You may stop using SALIXCEL and uninstall it at any time."
       ]}
     },
     privacy: {
       es: { title: "Política de Privacidad", body: [
-        "Resumen: SALIXCEL está diseñada para que la información de su negocio viva, en primer lugar, en su propio dispositivo. Si usted decide crear una cuenta (opcional), algunos de esos datos también se almacenan en servidores de terceros para permitirle respaldo y sincronización entre dispositivos.",
-        "Datos que recopilamos: datos de su negocio introducidos por usted (nombre, dirección, identificación fiscal, productos, fotos, clientes, ventas, gastos, deudas y metas); y, solo si crea una cuenta, su correo electrónico y contraseña (la contraseña se guarda cifrada por nuestro proveedor de autenticación; nunca la vemos en texto plano). No recopilamos datos de ubicación, historial de navegación ni datos biométricos.",
-        "Cómo se almacenan sus datos: en modo local (predeterminado), todo se guarda únicamente en su dispositivo y no tenemos acceso a ello. Si usted crea una cuenta, sus datos de negocio se sincronizan y almacenan en la infraestructura de nuestro proveedor de base de datos en la nube (Supabase), en servidores ubicados en Estados Unidos. Al crear una cuenta, usted acepta esta transferencia y almacenamiento internacional de datos.",
-        "Proveedores externos que procesan datos en su nombre: Supabase aloja la base de datos y el sistema de autenticación de las cuentas (solo si usted crea una); Brevo envía los correos de confirmación de cuenta y de restablecimiento de contraseña, procesando su correo electrónico solo para ese fin; si usted envía una factura o recordatorio por WhatsApp, el texto y el número de teléfono del destinatario se comparten con esa plataforma; los proveedores de publicidad pueden usar identificadores publicitarios de su dispositivo. Estos proveedores procesan datos según sus propias políticas de privacidad.",
-        "Permisos del dispositivo: cámara/galería (fotos de productos o logo, y para leer códigos de barras o recibos -el procesamiento ocurre en su dispositivo-), contactos (opcional, usted elige cada contacto manualmente), notificaciones (solo si activa recordatorios de deudas).",
-        "Retención y eliminación: puede exportar o borrar toda su información local en cualquier momento desde Configuración. Si tiene una cuenta, borrar los datos locales no elimina automáticamente su copia en la nube; para solicitar la eliminación completa de su cuenta y sus datos en la nube, escríbanos al correo de contacto indicado en Configuración → Contacto y notificaciones, o en nuestro sitio web.",
-        "Seguridad: aplicamos medidas razonables (cifrado en tránsito, contraseñas nunca almacenadas en texto plano), pero ningún sistema es 100% seguro. Usted es responsable de mantener segura su propia contraseña y el acceso a su dispositivo.",
-        "SALIXCEL no está dirigida a menores de edad y no recopilamos conscientemente datos de menores.",
-        "Sus derechos: puede solicitar acceso, corrección o eliminación de sus datos personales en cualquier momento, en la medida permitida por las leyes de su país.",
-        "Podemos actualizar esta Política periódicamente; la versión vigente estará siempre disponible dentro de la aplicación y en nuestro sitio web.",
-        "Para preguntas sobre privacidad, escríbanos al correo de contacto indicado en Configuración → Contacto y notificaciones, o a través de nuestro sitio web."
+        "En resumen: SALIXCEL guarda la información de tu negocio directamente en tu propio dispositivo. No existe un servidor central que reciba, almacene o venda tus datos.",
+        "Datos que introduces: nombre del negocio, productos, fotos, clientes, ventas, gastos y metas. Todo se guarda localmente en tu dispositivo.",
+        "Funciones opcionales con terceros: si tú lo activas, enviar una factura o recordatorio comparte el texto y el número de teléfono con WhatsApp. Ninguna de estas funciones se activa sola.",
+        "Permisos del dispositivo: cámara/galería (solo para fotos de productos o tu logo, se procesan localmente), contactos (opcional, eliges uno por uno, nunca se sincroniza todo), notificaciones (solo si activas los recordatorios de deudas).",
+        "SALIXCEL no recopila datos de ubicación ni historial de navegación. Algunas pantallas pueden mostrar publicidad de terceros para financiar el uso gratuito de la aplicación; estos anuncios pueden usar identificadores publicitarios de su dispositivo conforme a las políticas del proveedor de anuncios. Puede gestionar sus preferencias de anuncios desde la configuración de su dispositivo.",
+        "Como los datos viven en tu dispositivo, su seguridad depende en gran parte de la seguridad de tu propio celular. Te recomendamos hacer copias de seguridad periódicas.",
+        "Puedes exportar o borrar toda tu información en cualquier momento desde Configuración.",
+        "Esta Política puede actualizarse; la versión vigente estará siempre disponible dentro de la aplicación."
       ]},
       en: { title: "Privacy Policy", body: [
-        "Summary: SALIXCEL is designed so your business information lives, first and foremost, on your own device. If you choose to create an account (optional), some of that data is also stored on third-party servers to enable backup and sync across devices.",
-        "Data we collect: business data you enter (name, address, tax ID, products, photos, clients, sales, expenses, debts and goals); and, only if you create an account, your email and password (the password is stored encrypted by our authentication provider; we never see it in plain text). We do not collect location data, browsing history, or biometric data.",
-        "How your data is stored: in local mode (default), everything is stored only on your device and we have no access to it. If you create an account, your business data is synced and stored on our cloud database provider's infrastructure (Supabase), on servers located in the United States. By creating an account, you consent to this international data transfer and storage.",
-        "Third-party providers that process data on our behalf: Supabase hosts the account database and authentication system (only if you create an account); Brevo sends account confirmation and password reset emails, processing your email only for that purpose; if you send an invoice or reminder via WhatsApp, the message text and recipient's phone number are shared with that platform; advertising providers may use your device's advertising identifiers. These providers process data under their own privacy policies.",
-        "Device permissions: camera/gallery (product or logo photos, and for reading barcodes or receipts -processing happens on your device-), contacts (optional, you choose each contact manually), notifications (only if you enable debt reminders).",
-        "Retention and deletion: you can export or delete all your local information at any time from Settings. If you have an account, deleting local data does not automatically delete your cloud copy; to request full deletion of your account and cloud data, write to us at the contact email listed in Settings → Contact and notifications, or on our website.",
-        "Security: we apply reasonable measures (encryption in transit, passwords never stored in plain text), but no system is 100% secure. You are responsible for keeping your own password and device access secure.",
-        "SALIXCEL is not directed at children and we do not knowingly collect data from minors.",
-        "Your rights: you may request access, correction or deletion of your personal data at any time, to the extent permitted by the laws of your country.",
-        "We may update this Policy periodically; the current version will always be available within the application and on our website.",
-        "For privacy questions, write to us at the contact email listed in Settings → Contact and notifications, or through our website."
+        "In short: SALIXCEL stores your business information directly on your own device. There is no central server that receives, stores, or sells your data.",
+        "Data you enter: business name, products, photos, clients, sales, expenses and goals. All of it is stored locally on your device.",
+        "Optional features with third parties: if you turn it on, sending an invoice or reminder shares the text and phone number with WhatsApp. None of these features turn on by themselves.",
+        "Device permissions: camera/gallery (only for product photos or your logo, processed locally), contacts (optional, you choose one at a time, nothing syncs automatically), notifications (only if you enable debt reminders).",
+        "SALIXCEL does not collect location data or browsing history. Some screens may show third-party advertising to help fund free use of the app; these ads may use your device's advertising identifiers according to the ad provider's policies. You can manage your ad preferences from your device settings.",
+        "Since data lives on your device, its security largely depends on your own phone's security. We recommend backing up your data periodically.",
+        "You can export or delete all your information at any time from Settings.",
+        "This Policy may be updated; the current version will always be available within the application."
       ]}
     }
   };
@@ -661,6 +663,106 @@
     acc.appendChild(item);
   });
 
+  var FAQ = [
+    { es:{ title:"¿Necesito internet para usar la app?", body:[
+        "No. SALIXCEL guarda todo en tu celular al instante, así que puedes vender, agregar productos y registrar clientes sin señal.",
+        "Si activas el respaldo en la nube, la app sincroniza sola cuando vuelve a haber conexión — no tienes que hacer nada manualmente."
+      ]},
+      en:{ title:"Do I need internet to use the app?", body:[
+        "No. SALIXCEL saves everything to your phone instantly, so you can sell, add products and log clients with no signal.",
+        "If you turn on cloud backup, the app syncs on its own once you're back online — you don't have to do anything manually."
+      ]}
+    },
+    { es:{ title:"¿Qué pasa si pierdo mi celular o lo cambio por uno nuevo?", body:[
+        "Si tenías el respaldo en la nube activado, solo inicias sesión con tu cuenta en el celular nuevo y recuperas todo: productos, clientes, ventas e historial.",
+        "Si no lo activaste, te recomendamos exportar tus datos de vez en cuando desde Configuración como respaldo adicional."
+      ]},
+      en:{ title:"What happens if I lose my phone or switch to a new one?", body:[
+        "If you had cloud backup turned on, just sign in with your account on the new phone and you'll get everything back: products, clients, sales and history.",
+        "If you didn't turn it on, we recommend exporting your data from Settings every so often as an extra backup."
+      ]}
+    },
+    { es:{ title:"¿Cómo le doy acceso a un empleado sin darle todo mi negocio?", body:[
+        "Desde Configuración puedes invitar a un miembro de tu equipo por correo. Tú decides si puede ver la sección de clientes y deudas, o solo vender y ver inventario.",
+        "Cada miembro entra con su propia cuenta — no comparten la tuya, así que puedes quitarle el acceso cuando quieras."
+      ]},
+      en:{ title:"How do I give an employee access without handing over my whole business?", body:[
+        "From Settings you can invite a team member by email. You decide whether they can see the clients/debts section, or only sell and view inventory.",
+        "Each member signs in with their own account — they don't share yours, so you can remove their access whenever you want."
+      ]}
+    },
+    { es:{ title:"¿Los anuncios cuestan dinero o interrumpen mucho el uso de la app?", body:[
+        "No cuestan nada. SALIXCEL es gratis y los anuncios son completamente opcionales.",
+        "Solo aparecen si tú decides ver uno corto para desbloquear funciones Premium (color de acento, recordatorios de deuda y reporte mensual automático) durante 24 horas. Si no quieres verlos, simplemente no los ves y sigues usando el resto de la app normalmente."
+      ]},
+      en:{ title:"Do the ads cost money or get in the way a lot?", body:[
+        "They don't cost anything. SALIXCEL is free and the ads are completely optional.",
+        "They only show up if you choose to watch a short one to unlock Premium features (accent color, debt reminders and the automatic monthly report) for 24 hours. If you don't want to watch them, you simply don't — the rest of the app works normally either way."
+      ]}
+    },
+    { es:{ title:"¿La factura o comprobante que genera la app es válida legalmente?", body:[
+        "SALIXCEL genera un comprobante de venta con tu RUC/NIT, impuestos, número de factura y dirección, útil como respaldo para ti y tu cliente.",
+        "Si tu país exige facturación electrónica timbrada o algún trámite fiscal específico, verifica ese requisito con tu autoridad tributaria local — la app te ayuda a llevar el registro, pero no reemplaza obligaciones fiscales formales donde apliquen."
+      ]},
+      en:{ title:"Is the invoice the app generates legally valid?", body:[
+        "SALIXCEL generates a sales receipt with your tax ID, taxes, invoice number and address, useful as a record for you and your client.",
+        "If your country requires stamped e-invoicing or a specific tax procedure, check that requirement with your local tax authority — the app helps you keep records, but it doesn't replace formal tax obligations where they apply."
+      ]}
+    },
+    { es:{ title:"¿Cómo hago una copia de seguridad de mis datos?", body:[
+        "Desde Configuración puedes exportar toda tu información en cualquier momento.",
+        "También puedes activar el respaldo en la nube para que se guarde automáticamente y puedas usar la misma cuenta en más de un celular."
+      ]},
+      en:{ title:"How do I back up my data?", body:[
+        "From Settings you can export all your information at any time.",
+        "You can also turn on cloud backup so it saves automatically and you can use the same account on more than one phone."
+      ]}
+    },
+    { es:{ title:"¿En qué idiomas está disponible SALIXCEL?", body:[
+        "Español e inglés. Puedes cambiar el idioma cuando quieras desde Configuración, sin perder ningún dato."
+      ]},
+      en:{ title:"What languages is SALIXCEL available in?", body:[
+        "Spanish and English. You can change the language anytime from Settings, without losing any data."
+      ]}
+    },
+    { es:{ title:"El escáner no reconoce el código de barras, ¿qué hago?", body:[
+        "Revisa que la app tenga permiso de cámara activado en los ajustes de tu celular y que haya buena luz sobre el código.",
+        "Si aun así no lo detecta, puedes escribir el código manualmente al crear o editar el producto — no es obligatorio usar el escáner."
+      ]},
+      en:{ title:"The scanner won't recognize a barcode, what do I do?", body:[
+        "Check that the app has camera permission enabled in your phone's settings and that there's good light on the barcode.",
+        "If it still doesn't detect it, you can type the code in manually when creating or editing the product — using the scanner is never required."
+      ]}
+    },
+    { es:{ title:"¿Puedo cambiar el modo oscuro o la moneda después de empezar a usarla?", body:[
+        "Sí, ambos se pueden cambiar cuando quieras desde Configuración, sin afectar tus productos, ventas ni clientes ya guardados.",
+        "La primera vez, la app elige modo claro u oscuro según el ajuste de tu celular, pero después queda en tus manos."
+      ]},
+      en:{ title:"Can I change dark mode or the currency after I've started using the app?", body:[
+        "Yes, both can be changed anytime from Settings, without affecting products, sales or clients you've already saved.",
+        "The first time, the app picks light or dark mode based on your phone's setting, but after that it's entirely up to you."
+      ]}
+    }
+  ];
+
+  var faqAcc = document.getElementById("faq-accordion");
+  FAQ.forEach(function(q, idx){
+    var item = document.createElement("div");
+    item.className = "acc-item" + (idx === 0 ? " open" : "");
+    var bodyEs = q.es.body.map(function(p){ return '<p data-es>' + p + '</p>'; }).join("");
+    var bodyEn = q.en.body.map(function(p){ return '<p data-en>' + p + '</p>'; }).join("");
+    item.innerHTML =
+      '<button type="button" class="acc-head">' +
+        '<span><span data-es>' + q.es.title + '</span><span data-en>' + q.en.title + '</span></span>' +
+        '<svg class="icon acc-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>' +
+      '</button>' +
+      '<div class="acc-body"><div class="acc-body-inner">' + bodyEs + bodyEn + '</div></div>';
+    item.querySelector(".acc-head").addEventListener("click", function(){
+      item.classList.toggle("open");
+    });
+    faqAcc.appendChild(item);
+  });
+
   function setLang(lang){
     document.body.setAttribute("data-lang", lang);
     document.querySelectorAll("[data-set-lang]").forEach(function(btn){
@@ -678,6 +780,19 @@
     else if (!saved && navigator.language && navigator.language.toLowerCase().indexOf("en") === 0) initialLang = "en";
   } catch(e){}
   setLang(initialLang);
+
+  var scrollBtn = document.getElementById("scroll-down-btn");
+  function updateScrollBtn(){
+    var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    var nearBottom = window.scrollY >= scrollable - 40;
+    scrollBtn.classList.toggle("show", scrollable > 200 && !nearBottom);
+  }
+  scrollBtn.addEventListener("click", function(){
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+  });
+  window.addEventListener("scroll", updateScrollBtn, { passive: true });
+  window.addEventListener("resize", updateScrollBtn);
+  updateScrollBtn();
 })();
 </script>
 </body>
