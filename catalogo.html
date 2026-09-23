@@ -183,7 +183,7 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
       "<h2>Completar pedido</h2>" +
       '<div id="summary" style="margin-bottom:14px;font-size:14px">' + lines + '<div style="margin-top:8px;font-weight:700">Total: ' + money(total) + "</div></div>" +
       '<input id="cName" placeholder="Tu nombre">' +
-      '<input id="cPhone" placeholder="Tu teléfono (opcional)">' +
+      '<input id="cPhone" placeholder="Tu teléfono" type="tel">' +
       '<textarea id="cNote" placeholder="Nota (opcional)" rows="2"></textarea>' +
       '<button class="primary" onclick="sendOrder()">Enviar pedido</button>' +
       '<button onclick="closeModal()" style="width:100%;background:transparent;color:var(--muted);margin-top:8px;padding:10px">Cancelar</button>';
@@ -200,6 +200,7 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
     var name = document.getElementById("cName").value.trim();
     if (!name) { alert("Escribe tu nombre"); return; }
     var phone = document.getElementById("cPhone").value.trim();
+    if (!phone) { alert("Escribe tu teléfono, es necesario para que te contacten"); return; }
     var note = document.getElementById("cNote").value.trim();
     var ids = Object.keys(cart);
     var total = 0, lines = [], items = [];
