@@ -42,11 +42,13 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
 .sent-box .ok{width:56px;height:56px;border-radius:50%;background:#E4F1EA;color:#3F7D5C;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
 .powered{display:block;text-align:center;padding:14px;font-size:11.5px;color:var(--muted)}
 .powered a{color:var(--accent);text-decoration:none;font-weight:600}
+.offline-link{display:none;text-align:center;margin-top:18px}
+.offline-link button{background:none;color:var(--accent);font-size:12.5px;font-weight:600;text-decoration:underline;padding:6px}
 </style>
 </head>
 <body>
 <header><h1 id="bizName">SALIXCEL</h1><p>Catálogo y pedidos</p></header>
-<div class="wrap"><div id="app"><div class="empty">Cargando…</div></div><a class="powered" href="https://delgadoangie196-ops.github.io/salixcel-site/" target="_blank" rel="noopener">Catálogo hecho con <span>SALIXCEL</span></a></div>
+<div class="wrap"><div id="app"><div class="empty">Cargando…</div></div><div class="offline-link" id="offlineLink"><button type="button" onclick="downloadOffline()">Guardar este catálogo para verlo sin internet</button></div><a class="powered" href="https://delgadoangie196-ops.github.io/salixcel-site/" target="_blank" rel="noopener">Catálogo hecho con <span>SALIXCEL</span></a></div>
 <div class="cartbar" id="cartbar" onclick="openModal()"><span id="cartCount"></span><span id="cartTotal"></span></div>
 <div class="modal" id="modal"><div class="sheet" id="sheetInner"></div></div>
 <div class="lightbox" id="lightbox" onclick="closeLightbox()"><button class="lbclose" onclick="closeLightbox()">✕</button><img id="lightboxImg" src=""></div>
@@ -105,6 +107,7 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
         document.title = bizName + " — Catálogo";
         document.getElementById("bizName").textContent = bizName;
         render();
+        document.getElementById("offlineLink").style.display = "block";
       })
       .catch(function () {
         showError("No se pudo cargar el catálogo. Revisa tu conexión e intenta de nuevo.");
@@ -235,6 +238,63 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
       '<div class="sent-box"><div class="ok">✓</div><p style="font-weight:600;margin-bottom:6px">¡Pedido enviado!</p>' +
       '<p style="color:var(--muted);font-size:13.5px;margin-bottom:18px">' + esc(bizName) + " recibirá tu pedido y se pondrá en contacto contigo.</p>" +
       '<button class="primary" style="width:auto;padding:10px 22px" onclick="location.reload()">Ver catálogo de nuevo</button></div>';
+  };
+
+  function buildOfflineHTML() {
+    var payload = JSON.stringify(DATA)
+      .replace(/</g, "\\u003c").replace(/`/g, "\\u0060").replace(/\$\{/g, "\\u0024{");
+    var bizName = esc((DATA.business && DATA.business.name) || "Catálogo");
+    return "<!DOCTYPE html><html lang=\"es\"><head><meta charset=\"UTF-8\">" +
+      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
+      "<title>" + bizName + " — Catálogo (sin internet)</title><style>" +
+      ":root{--accent:#6B2FB3;--bg:#FAFAF6;--card:#fff;--line:#EAE7DD;--muted:#8A887F;--ink:#1C1C1A;}" +
+      "*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,sans-serif}" +
+      "header{background:var(--accent);color:#fff;padding:22px 16px;text-align:center}header h1{margin:0;font-size:20px}header p{margin:4px 0 0;font-size:12px;opacity:.8}" +
+      ".wrap{max-width:480px;margin:0 auto;padding:16px;padding-bottom:40px}" +
+      ".cat-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:20px 0 8px}" +
+      ".item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:8px}.item.out{opacity:.55}" +
+      ".thumb{width:48px;height:48px;border-radius:12px;object-fit:cover;flex-shrink:0}.thumb-empty{width:48px;height:48px;border-radius:12px;background:#F1EFE8;flex-shrink:0}" +
+      ".info{flex:1;min-width:0}.info b{display:block;font-size:14px}.info span{font-size:13px;color:var(--muted)}" +
+      ".social{text-align:center;margin-top:24px;font-size:12px;color:var(--muted)}.empty{text-align:center;padding:40px;color:var(--muted)}" +
+      ".notice{margin:16px;padding:12px 14px;background:#FDF3E7;border-radius:12px;color:#8A5A22;font-size:12.5px;line-height:1.5}" +
+      "</style></head><body>" +
+      "<header><h1>" + bizName + "</h1><p>Catálogo (copia sin internet)</p></header>" +
+      "<div class=\"wrap\"><div class=\"notice\">Esta es una copia guardada del catálogo. Para hacer un pedido, contacta al negocio directamente.</div><div id=\"app\"></div></div>" +
+      "<script>try{" +
+      "var DATA=" + payload + ";" +
+      "function money(n){return DATA.business.currency+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}" +
+      "var products=DATA.products||[];var app=document.getElementById('app');" +
+      "if(!products.length){app.innerHTML='<div class=\"empty\">Este catálogo aún no tiene productos.</div>';}else{" +
+      "var html='';var allCats=(DATA.categories||[]).concat(products.map(function(p){return p.category;})).filter(function(c,i,arr){return arr.indexOf(c)===i;});" +
+      "allCats.forEach(function(cat){var items=products.filter(function(p){return p.category===cat;});if(!items.length)return;" +
+      "html+='<div class=\"cat-title\">'+cat+'</div>';" +
+      "items.forEach(function(p){var out=p.stock!==null&&p.stock!==undefined&&p.stock<=0;" +
+      "html+='<div class=\"item'+(out?' out':'')+'\">'+(p.image?'<img class=\"thumb\" src=\"'+p.image+'\">':'<div class=\"thumb-empty\"></div>')" +
+      "+'<div class=\"info\"><b>'+p.name+'</b><span>'+money(p.price)+(out?' · agotado':'')+'</span></div></div>';});});" +
+      "app.innerHTML=html;" +
+      "var social=(DATA.business&&DATA.business.social)||{};var items2=[];" +
+      "if(social.whatsapp)items2.push('WhatsApp: '+social.whatsapp);" +
+      "if(social.instagram)items2.push('Instagram: '+social.instagram);" +
+      "if(social.facebook)items2.push('Facebook: '+social.facebook);" +
+      "if(social.tiktok)items2.push('TikTok: '+social.tiktok);" +
+      "if(social.web)items2.push('Web: '+social.web);" +
+      "if(items2.length)app.innerHTML+='<div class=\"social\">'+items2.join(' · ')+'</div>';" +
+      "}}catch(e){document.getElementById('app').innerHTML='<div class=\"empty\">No se pudo mostrar el catálogo.</div>';}" +
+      "<\/script></body></html>";
+  }
+
+  window.downloadOffline = function () {
+    if (!DATA) return;
+    var html = buildOfflineHTML();
+    var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "catalogo-" + slug + ".html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
   };
 })();
 </script>
