@@ -638,11 +638,23 @@
         "You can export or delete all your information at any time from Settings.",
         "This Policy may be updated; the current version will always be available within the application."
       ]}
+    },
+    delete: {
+      es: { title: "Eliminar tu cuenta y tus datos", body: [
+        "Si activaste el respaldo en la nube de SALIXCEL y quieres eliminar tu cuenta y los datos asociados guardados en nuestros servidores, escríbenos a salixcel.app@gmail.com desde el correo con el que creaste tu cuenta, con el asunto \"Eliminar mi cuenta\".",
+        "Procesamos la solicitud en un plazo máximo de 7 días. Al eliminar tu cuenta, se borran de nuestros servidores: tu correo de cuenta, y la copia en la nube de tu negocio, productos, clientes, ventas, gastos y catálogo publicado (si tenías uno activo, el enlace público deja de funcionar).",
+        "Esto no afecta la información guardada directamente en tu propio dispositivo (que nunca pasa por nuestros servidores salvo que actives el respaldo en la nube) — esa la puedes borrar tú misma en cualquier momento desde Configuración, sin necesidad de escribirnos."
+      ]},
+      en: { title: "Delete your account and data", body: [
+        "If you turned on SALIXCEL's cloud backup and want to delete your account and the associated data stored on our servers, email us at salixcel.app@gmail.com from the address you used to create your account, with the subject \"Delete my account\".",
+        "We process the request within 7 days. Deleting your account removes from our servers: your account email, and the cloud copy of your business, products, clients, sales, expenses and published catalog (if you had one active, its public link stops working).",
+        "This does not affect information stored directly on your own device (which never reaches our servers unless you turn on cloud backup) — you can delete that yourself at any time from Settings, with no need to contact us."
+      ]}
     }
   };
 
   var acc = document.getElementById("legal-accordion");
-  ["terms","privacy"].forEach(function(key, idx){
+  ["terms","privacy","delete"].forEach(function(key, idx){
     var item = document.createElement("div");
     item.className = "acc-item" + (idx === 0 ? " open" : "");
     var esC = LEGAL[key].es, enC = LEGAL[key].en;
