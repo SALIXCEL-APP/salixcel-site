@@ -274,21 +274,22 @@ input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-
       "<script>try{" +
       "var DATA=" + payload + ";" +
       "function money(n){return DATA.business.currency+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}" +
+      "function esc(s){return String(s==null?'':s).replace(/[&<>\\\"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\\\"':'&quot;',\"'\":'&#39;'}[c];});}" +
       "var products=DATA.products||[];var app=document.getElementById('app');" +
       "if(!products.length){app.innerHTML='<div class=\"empty\">Este catálogo aún no tiene productos.</div>';}else{" +
       "var html='';var allCats=(DATA.categories||[]).concat(products.map(function(p){return p.category;})).filter(function(c,i,arr){return arr.indexOf(c)===i;});" +
       "allCats.forEach(function(cat){var items=products.filter(function(p){return p.category===cat;});if(!items.length)return;" +
-      "html+='<div class=\"cat-title\">'+cat+'</div>';" +
+      "html+='<div class=\"cat-title\">'+esc(cat)+'</div>';" +
       "items.forEach(function(p){var out=p.stock!==null&&p.stock!==undefined&&p.stock<=0;" +
-      "html+='<div class=\"item'+(out?' out':'')+'\">'+(p.image?'<img class=\"thumb\" src=\"'+p.image+'\">':'<div class=\"thumb-empty\"></div>')" +
-      "+'<div class=\"info\"><b>'+p.name+'</b><span>'+money(p.price)+(out?' · agotado':'')+'</span></div></div>';});});" +
+      "html+='<div class=\"item'+(out?' out':'')+'\">'+(p.image?'<img class=\"thumb\" src=\"'+esc(p.image)+'\">':'<div class=\"thumb-empty\"></div>')" +
+      "+'<div class=\"info\"><b>'+esc(p.name)+'</b><span>'+esc(money(p.price))+(out?' · agotado':'')+'</span></div></div>';});});" +
       "app.innerHTML=html;" +
       "var social=(DATA.business&&DATA.business.social)||{};var items2=[];" +
-      "if(social.whatsapp)items2.push('WhatsApp: '+social.whatsapp);" +
-      "if(social.instagram)items2.push('Instagram: '+social.instagram);" +
-      "if(social.facebook)items2.push('Facebook: '+social.facebook);" +
-      "if(social.tiktok)items2.push('TikTok: '+social.tiktok);" +
-      "if(social.web)items2.push('Web: '+social.web);" +
+      "if(social.whatsapp)items2.push('WhatsApp: '+esc(social.whatsapp));" +
+      "if(social.instagram)items2.push('Instagram: '+esc(social.instagram));" +
+      "if(social.facebook)items2.push('Facebook: '+esc(social.facebook));" +
+      "if(social.tiktok)items2.push('TikTok: '+esc(social.tiktok));" +
+      "if(social.web)items2.push('Web: '+esc(social.web));" +
       "if(items2.length)app.innerHTML+='<div class=\"social\">'+items2.join(' · ')+'</div>';" +
       "}}catch(e){document.getElementById('app').innerHTML='<div class=\"empty\">No se pudo mostrar el catálogo.</div>';}" +
       "<\/script></body></html>";
